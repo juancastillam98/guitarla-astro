@@ -1,0 +1,34 @@
+<!-- EN astro, el fichero se divide en tres partes. contenido js (entre 3 guiones) el Layout y el css -->
+---
+import Layout from '../layouts/Layout.astro';
+import nosotros from "../../img/nosotros.jpg"
+import {Image} from "astro:assets";
+---
+
+<Layout title="Nosotros" description="Sobre nosotros">
+    <!--Lo que va aquí dentro del layout, es el <slot/>-->
+    <main class="contenedor">
+        <h1 class:list= {"heading"}>Nosotros</h1>
+        <div class="contenido">
+            <Image src={nosotros} alt="Imagen de sobre nosotros"/>
+            <div>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum elementum augue ullamcorper nisl ornare ultricies. Morbi feugiat velit at quam dignissim sodales. Etiam scelerisque nisl nibh, at luctus arcu porta sit amet. Vestibulum non laoreet nunc. Suspendisse porttitor, eros et varius vehicula, erat mauris pretium neque, ac pellentesque lacus leo a diam. Aliquam non nibh ligula. Quisque scelerisque, felis eu posuere vehicula, quam eros condimentum lectus, at pulvinar sem diam eu leo.</p>
+
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum elementum augue ullamcorper nisl ornare ultricies. Morbi feugiat velit at quam dignissim sodales. Etiam scelerisque nisl nibh, at luctus arcu porta sit amet. Vestibulum non laoreet nunc. Suspendisse porttitor, eros et varius vehicula, erat mauris pretium neque, ac pellentesque lacus leo a diam. Aliquam non nibh ligula. Quisque scelerisque, felis eu posuere vehicula, quam eros condimentum lectus, at pulvinar sem diam eu leo.</p>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<style>
+    .contenido {
+        display: grid;
+        gap: 4rem;
+    }
+    @media (min-width: 768px) {
+        .contenido {
+            grid-template-columns: repeat(2, 1fr);
+            align-items: center;
+        }
+    }
+</style>

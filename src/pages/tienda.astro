@@ -1,0 +1,28 @@
+<!-- EN astro, el fichero se divide en tres partes. contenido js (entre 3 guiones) el Layout y el css -->
+---
+import Layout from '../layouts/Layout.astro';
+import Guitarra from '../components/Guitarra.astro';
+
+//consultar API
+const url =`${import.meta.env.PUBLIC_API_URL}/guitarras?populate=imagen`; //IMPORTANTE, aquí no funciona localhost. Hay que poner 127.0.0.1
+const respuesta = await fetch(url);
+const {data}= await respuesta.json();//recuerda que la consulta devuelve un objeto llamado data
+
+---
+
+<Layout title="Tienda" description="Tienda de guitarras">
+    <main class="contenedor">
+        <h1 class:list= {"heading"}>Nuestra colección</h1>
+        <div class="grid">
+            {data?.map(guitarra => (
+                <Guitarra
+                        nombre={guitarra.attributes.nombre}
+                        descripcion={guitarra.attributes.descripcion}
+                        url={guitarra.attributes.url}
+                        precio={guitarra.attributes.precio}
+                        imagen={guitarra.attributes.imagen.data.attributes.formats.medium.url}
+                />
+            ))}
+        </div>
+    </main>
+</Layout>

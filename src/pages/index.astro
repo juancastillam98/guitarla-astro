@@ -1,0 +1,62 @@
+<!-- EN astro, el fichero se divide en tres partes. contenido js (entre 3 guiones) el Layout y el css -->
+---
+import Layout from '../layouts/Layout.astro';
+import Guitarra from "../components/Guitarra.astro";
+import Post from "../components/Post.astro";
+import Curso from "../components/Curso.astro";
+import {ComponenteReact} from "../components/ComponenteReact";
+const urlGuitarras =`${import.meta.env.PUBLIC_API_URL}/guitarras?populate=imagen`;
+const urlPosts =`${import.meta.env.PUBLIC_API_URL}/posts?populate=imagen`;
+const urlCurso =`${import.meta.env.PUBLIC_API_URL}/curso?populate=imagen`;
+const [resGuitarras, resPosts, resCurso] = await Promise.all([
+	fetch(urlGuitarras),
+	fetch(urlPosts),
+	fetch(urlCurso),
+])
+
+const [{data: guitarras}, {data: posts}, {data: curso}] = await Promise.all([
+	resGuitarras.json(),
+	resPosts.json(),
+	resCurso.json()
+])
+---
+
+<Layout title="Welcome to Astro." description="Tienda de guitarras">
+	<main class="contenedor">
+		<h1 class:list={"heading"}>Inicio</h1>
+		<div class:list={"grid"}>
+			{guitarras?.map(guitarra => (
+				<Guitarra
+					nombre={guitarra.attributes.nombre}
+					descripcion={guitarra.attributes.descripcion}
+					url={guitarra.attributes.url}
+					precio={guitarra.attributes.precio}
+					imagen={guitarra.attributes.imagen.data.attributes.formats.medium.url}
+				/>
+			))}
+		</div>
+	</main>
+	<Curso
+		titulo={curso.attributes.titulo}
+		contenido= {curso.attributes.contenido}
+		imagen={curso.attributes.imagen.data.attributes.url}
+	/>
+	<ComponenteReact/>
+	<section class="contenedor">
+		<h2 class="heading">Blog</h2>
+		<div class="grid">
+			{posts?.map(post =>(
+				<Post
+					titulo={post.attributes.titulo}
+					conteniodo={post.attributes.conteniodo}
+					url={post.attributes.url}
+					publishedAt={post.attributes.publishedAt}
+					imagen={post.attributes.imagen.data.attributes.formats.medium.url}
+				/>
+			))}
+		</div>
+	</section>
+</Layout>
+
+<style>
+</style>

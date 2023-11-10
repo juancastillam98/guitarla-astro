@@ -1,0 +1,108 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import {Image} from "astro:assets";
+export async function getStaticPaths(){
+    const url =`${import.meta.env.PUBLIC_API_URL}/guitarras?populate=imagen`;
+    const respuesta = await fetch(url);
+    const {data} = await respuesta.json();
+
+    //lo que estoy haciendo es recorrerme todas las guitarras y devolver el parámetro de la url
+    return data.map(guitarra =>({
+        params: {//estos son los parámetros de la url
+            id: guitarra.attributes.url //de cada una de las guitarras, va a coger la url, pero solo la url que coincida con los parámetros
+        },
+        //ya está filtrando por la url. No se como pero se ve que ya filtra
+        props:{//los props es la información que va a estar disponible en el template
+            guitarra: guitarra.attributes //le pasamos todos los atributos de la guitarra.
+        }
+    }))
+}
+//console.log(Astro.params)//muestra la url
+//console.log(Astro.props)//muestra un objeto guitarra, ya filtrado por la url
+const {nombre, imagen, descripcion, precio}=Astro.props.guitarra
+---
+
+<Layout title={nombre} aria-description={descripcion}>
+    <main class:list={"guitarra"}>
+        <Image src={imagen.data.attributes.url} width={600} height={400} alt={`Imagen guitarra ${nombre}`}/>
+        <div class:list={"contenido"}>
+            <h3>{nombre}</h3>
+            <p class:list={"descipcion"}>{descripcion}</p>
+            <p class:list={"precio"}>${precio}</p>
+            <form class:list={"formulario"}>
+                <label for="cantidad">Cantidad</label>
+                <select id="cantidad">
+                    <option value="0">--Sleccione--</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <input type="submit" value="Agregar al carrito"/>
+            </form>
+        </div>
+    </main>
+</Layout>
+<style>
+    .guitarra {
+        display: grid;
+        grid-template-columns: 2fr 3fr;
+        gap: 1rem;
+        align-items: center;
+        max-width: 70rem;
+        margin: 0 auto;
+    }
+    .contenido {
+        padding: 1rem;
+    }
+    .contenido h3 {
+        font-size: 3rem;
+        text-transform: uppercase;
+        color: var(--primary);
+    }
+    .descripcion {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 6;
+        overflow: hidden;
+        font-size: 1.8rem;
+    }
+    .precio {
+        color: var(--primary);
+        font-size: 4rem;
+        margin: 0;
+        font-weight: 900;
+    }
+    .formulario {
+        margin-top: 4rem;
+        display: flex;
+        gap: 1rem;
+        flex-direction: column;
+    }
+    .formulario label {
+        font-size: 2.2rem;
+    }
+    .formulario select {
+        border: 1px solid var(--black);
+        padding: 1rem;
+        text-align: center;
+        border-radius: 1rem;
+    }
+    .formulario input[type="submit"] {
+        display: block;
+        width: 100%;
+        text-transform: uppercase;
+        font-weight: bold;
+        border: none;
+        padding: 1.4rem;
+        background-color: var(--black);
+        color: var(--white);
+        transition-property: background-color;
+        transition-duration: 300ms;
+    }
+    .formulario input[type="submit"]:hover {
+        background-color: var(--primary);
+        cursor: pointer;
+    }
+</style>
